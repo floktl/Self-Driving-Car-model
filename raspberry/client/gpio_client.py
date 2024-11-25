@@ -1,17 +1,29 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    gpio_client.py                                     :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: fkeitel <fkeitel@student.42.fr>            +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/11/25 16:45:36 by fkeitel           #+#    #+#              #
+#    Updated: 2024/11/25 16:58:03 by fkeitel          ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
 
 #-------------------------------------------------------------------------------
-# script to receive the pin status of the raspberry pi GPIO pins using sockets
-#  with json tcp protocolls for data transmissing
-# using tkinter graphical window management
+#	script to receive the pin status of the raspberry pi GPIO pins using sockets
+# 	with json tcp protocolls for data transmissing
+# 	using tkinter graphical window management
+#	usuage (on pc in the same network as rpi): python3 gpio_client.py
 #-------------------------------------------------------------------------------
 
-import socket
+import socket # Module for network communication
 import json
 from tkinter import Tk, Frame, Label # for graphic window
 
 # Server connection settings
-HOST = "172.17.254.51"  # Replace with your Raspberry Pi's IP address
-PORT = 65432 # same port  as in the server
+HOST = "172.17.254.51"  # Replace with actual Raspberry Pi's IP address
+PORT = 65432 # Must match the port number used by the server
 
 # Connect to the Raspberry Pi server (IPv4 and TCP protocoll)
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -33,16 +45,17 @@ except Exception as e:
 
 # GUI setup
 root = Tk() # init tkinter
-root.title("Raspberry Pi GPIO States")
+root.title("Raspberry Pi GPIO States") # window title
 root.geometry("600x800")  # Adjusted window size for more pins
 
 # Frame for GPIO states
-gpio_frame = Frame(root, padx=10, pady=10)
+gpio_frame = Frame(root, padx=10, pady=10) # frame inside main win with padding
 gpio_frame.pack(fill="both", expand=True) # widget adapting when window resized
 
 # Dictionary to hold the labels for each pin
 state_labels = {}
 
+# Function to update GPIO states in the GUI
 def update_states():
 	try:
 		# Buffer to handle potential large JSON messages
@@ -57,27 +70,29 @@ def update_states():
 			message, buffer = buffer.split("\n", 1)
 			try:
 				pin_states = json.loads(message)  # Parse the JSON message
+				# Loop through each GPIO pin and its details
 				for pin, details in pin_states.items():
 					# Extract pin mode and state
-					mode = details.get("mode", "unknown")
-					state = details.get("state", "N/A")
+					mode = details.get("mode", "unknown") # (default to "unknown")
+					state = details.get("state", "N/A") # (default to "N/A")
 
 					# Create labels dynamically for each GPIO pin
-					if pin not in state_labels:
+					if pin not in state_labels: # If no label for pin, create one
 						frame = Frame(
 							gpio_frame, bd=1, relief="solid", padx=5, pady=5
-						)
+						) # Create a bordered frame for the pin's label
 						frame.pack(pady=2, fill="x")
 
 						state_label = Label(
 							frame,
-							text="",
-							width=50,
-							anchor="w",
+							text="",  # Initialize with empty text
+							width=50, # Set a fixed width
+							anchor="w", # Align text to the left
 							font=("Helvetica", 12),
 						)
 						state_label.pack(side="left", padx=5)
 						state_labels[pin] = state_label
+					# Retrieve the label for the current pin
 					state_label = state_labels[pin]
 
 					# Update label text and color based on mode and state

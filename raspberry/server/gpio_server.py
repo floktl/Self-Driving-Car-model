@@ -1,3 +1,22 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    gpio_server.py                                     :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: fkeitel <fkeitel@student.42.fr>            +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/11/25 16:45:27 by fkeitel           #+#    #+#              #
+#    Updated: 2024/11/25 17:03:44 by fkeitel          ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+#-------------------------------------------------------------------------------
+# 	script to send the pin status of the raspberry pi GPIO pins using sockets
+#	with json tcp protocolls for data transmissing
+#	usuage (on raspberry pi): python 3 gpio_server.py &
+#	then start client on the client pc
+#-------------------------------------------------------------------------------
+
 import RPi.GPIO as GPIO
 import socket
 import json
@@ -33,11 +52,11 @@ def detect_pin_modes():
 # Set up the server socket for communication.
 HOST = "0.0.0.0"  # Listen on all available network interfaces.
 PORT = 65432  # Port number for the server to listen on.
-# socket.AF_INET: Specifies the socket will use the IPv4 protocol for communication.
-# socket.SOCK_STREAM: Indicates that the socket will use TCP (Transmission Control Protocol)
+# AF_INET: Specifies the socket will use IPv4 protocol for communication.
+# SOCK_STREAM: Indicates that socket will use TCP (Transmission Control Protocol)
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # Create a TCP socket.
 server.bind((HOST, PORT))  # Bind the socket to the specified host and port.
-server.listen(1)  # Start listening for incoming connections, allowing one client at a time.
+server.listen(1)  # Start listen for inc. conn., allowing one client at a time.
 
 print("Server listening for connections...")
 #Server is now set up and waiting for connections
@@ -54,18 +73,21 @@ try:
                 # Collect the state and mode of all pins dynamically.
                 with lock:  # Ensure thread-safe access to `monitored_pins`.
                     pin_states = {
-                        f"GPIO {pin}": { # f-string syntax, {pin} dynamically inserts value of pin.
-                            "mode": monitored_pins[pin],  # Retrieve the mode of the pin.
-                            "state": GPIO.input(pin) if monitored_pins[pin] in ("input", "output") else "N/A"  # Get the state of pin
+                        # f-string syntax, {pin} dynamically inserts value of pin.
+                        f"GPIO {pin}": {
+                            "mode": monitored_pins[pin],  # Retrieve mode of pin.
+                            # get pin state
+                            "state": GPIO.input(pin) if monitored_pins[pin]
+                            	in ("input", "output") else "N/A"
                         }
                         for pin in ALL_GPIO_PINS  # Process all pins.
                     }
 
                 # Serialize the pin states as JSON data.
                 json_data = json.dumps(pin_states)
-                # Send the serialized data to the client, appending a newline as a delimiter.
+                # Send serialized data to client, appending newline as delimiter.
                 conn.sendall((json_data + "\n").encode('utf-8'))
-                time.sleep(0.1)  # Wait for a short interval to simulate real-time updates.
+                time.sleep(0.1)  # Wait for short interv. to sim. real-time update
         except (BrokenPipeError, ConnectionResetError):
             # Handle cases where the client disconnects unexpectedly.
             print("Connection closed")
