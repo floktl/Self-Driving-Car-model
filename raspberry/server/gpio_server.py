@@ -3,17 +3,17 @@
 #                                                         :::      ::::::::    #
 #    gpio_server.py                                     :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: fkeitel <fkeitel@student.42.fr>            +#+  +:+       +#+         #
+#    By: flo <flo@student.42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/25 16:45:27 by fkeitel           #+#    #+#              #
-#    Updated: 2024/11/25 17:03:44 by fkeitel          ###   ########.fr        #
+#    Updated: 2024/11/29 16:27:43 by flo              ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 #-------------------------------------------------------------------------------
 # 	script to send the pin status of the raspberry pi GPIO pins using sockets
 #	with json tcp protocolls for data transmissing
-#	usuage (on raspberry pi): python 3 gpio_server.py &
+#	usuage (on raspberry pi): python3 gpio_server.py &
 #	then start client on the client pc
 #-------------------------------------------------------------------------------
 
