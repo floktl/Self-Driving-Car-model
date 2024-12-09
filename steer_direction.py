@@ -1,6 +1,12 @@
 import RPi.GPIO as GPIO
+import sys
+import termios
+import tty
 import time
-import curses
+
+# Disable warnings and cleanup at the start
+GPIO.setwarnings(False)
+GPIO.cleanup()
 
 # Pin setup
 LEFT_PIN = 17   # GPIO pin for left
@@ -15,38 +21,76 @@ GPIO.setup(RIGHT_PIN, GPIO.OUT)
 GPIO.output(LEFT_PIN, GPIO.LOW)
 GPIO.output(RIGHT_PIN, GPIO.LOW)
 
-def main(stdscr):
-	curses.cbreak()
-	stdscr.keypad(True)
-	stdscr.clear()
-	stdscr.addstr("Press 'L' to turn left, 'R' to turn right, 'Q' to quit.\n")
+def get_char():
+    """
+    Read a single character from standard input without waiting for Enter.
+    """
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    try:
+        tty.setraw(fd)
+        char = sys.stdin.read(1)
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+    return char
 
-	try:
-		while True:
-			key = stdscr.getch()
+def main():
+    print("Hold 'L' to steer left, 'R' to steer right. Release to stop. Press 'Q' to quit.")
 
-			if key in [ord('l'), ord('L')]:  # Turn left
-				GPIO.output(LEFT_PIN, GPIO.HIGH)
-				GPIO.output(RIGHT_PIN, GPIO.LOW)
-				stdscr.addstr("Turning left\n")
+    left_pressed = False
+    right_pressed = False
 
-			elif key in [ord('r'), ord('R')]:  # Turn right
-				GPIO.output(LEFT_PIN, GPIO.LOW)
-				GPIO.output(RIGHT_PIN, GPIO.HIGH)
-				stdscr.addstr("Turning right\n")
+    try:
+        while True:
+            # Non-blocking character read
+            char = None
+            fd = sys.stdin.fileno()
+            old_settings = termios.tcgetattr(fd)
+            try:
+                tty.setraw(fd)
+                char = sys.stdin.read(1)
+            except:
+                pass
+            finally:
+                termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
 
-			elif key in [ord('q'), ord('Q')]:  # Quit program
-				stdscr.addstr("Exiting program...\n")
-				break
+            # Update key states based on the character read
+            if char:
+                if char.lower() == 'l':
+                    left_pressed = True
+                    right_pressed = False  # Prevent conflict
+                elif char.lower() == 'r':
+                    right_pressed = True
+                    left_pressed = False  # Prevent conflict
+                elif char.lower() == 'q':  # Quit program
+                    print("\nExiting program...")
+                    break
+                else:
+                    left_pressed = False
+                    right_pressed = False
 
-			else:
-				# Set both pins to LOW if no key is pressed
-				GPIO.output(LEFT_PIN, GPIO.LOW)
-				GPIO.output(RIGHT_PIN, GPIO.LOW)
+            # Apply states to GPIO
+            if left_pressed:
+                GPIO.output(LEFT_PIN, GPIO.HIGH)
+                GPIO.output(RIGHT_PIN, GPIO.LOW)
+                print("Steering left", end="\r")
+            elif right_pressed:
+                GPIO.output(LEFT_PIN, GPIO.LOW)
+                GPIO.output(RIGHT_PIN, GPIO.HIGH)
+                print("Steering right", end="\r")
+            else:
+                GPIO.output(LEFT_PIN, GPIO.LOW)
+                GPIO.output(RIGHT_PIN, GPIO.LOW)
+                print("Stopped       ", end="\r")  # Clear previous text
 
-	finally:
-		GPIO.cleanup()
-		curses.endwin()
+            time.sleep(0.05)  # Small delay for smooth operation
+
+    except KeyboardInterrupt:
+        print("\nProgram interrupted.")
+
+    finally:
+        GPIO.cleanup()
+        print("GPIO cleaned up.")
 
 if __name__ == "__main__":
-	curses.wrapper(main)
+    main()
