@@ -42,6 +42,7 @@ void loop() {
   // Read the state of the left and right signals from Raspberry Pi
   int leftState = digitalRead(leftPin);   // Read the state of leftPin
   int rightState = digitalRead(rightPin); // Read the state of rightPin
+  
   digitalWrite(pin12,HIGH);
   digitalWrite(pin11,LOW);
 

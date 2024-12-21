@@ -6,7 +6,7 @@
 /*   By: Florian Keitel <fl.keitelgmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 22:33:13 by Florian Kei       #+#    #+#             */
-/*   Updated: 2024/12/21 17:47:56 by Florian Kei      ###   ########.fr       */
+/*   Updated: 2024/12/21 18:50:41 by Florian Kei      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ void VehicleController::setup()
 	frontSensor.initialize();
 	leftSensor.initialize();
 	rightSensor.initialize();
+	pinMode(leftPin, INPUT);  // Set leftPin as input
+	pinMode(rightPin, INPUT); // Set rightPin as input
 	Serial.begin(9600);
 	Serial.println("Vehicle Initialized and Ready!");
 }
@@ -48,13 +50,34 @@ void VehicleController::loop()
 	int distanceLeft = leftSensor.getDistance();
 	int distanceright = rightSensor.getDistance();
 
-	if (distanceFront > 0 && distanceFront != lastFrontDistance)
+	leftState = digitalRead(leftPin);   // Read the state of leftPin
+	rightState = digitalRead(rightPin); // Read the state of rightPin
+	Serial.println(leftPin);
+	if (leftState != HIGH && rightState != HIGH &&  distanceFront > 0 && distanceFront != lastFrontDistance)
 	{
 		adjustSpeed(distanceFront);
 		steerVehicle(distanceLeft, distanceright);
 		lastFrontDistance = distanceFront;
 	}
-
+	else
+	{
+		if (leftState == HIGH)
+		{  // If the left signal is HIGH, move the servo left
+			Serial.println("Left");
+			if (steering.getPosition() - steerSpeed > steering.minLeft)
+			{
+				steering.steerLeft(10);
+			}
+		}
+		if (rightState == HIGH)
+		{ // If the right signal is HIGH, move the servo right
+			Serial.println("Right");
+			if (steering.getPosition() + steerSpeed < steering.maxRight)
+			{
+				steering.steerRight(10);
+			}
+		}
+	}
 	delay(servoDelayTime);
 }
 

@@ -6,7 +6,7 @@
 /*   By: Florian Keitel <fl.keitelgmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 22:32:36 by Florian Kei       #+#    #+#             */
-/*   Updated: 2024/12/21 17:51:13 by Florian Kei      ###   ########.fr       */
+/*   Updated: 2024/12/21 18:40:27 by Florian Kei      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,12 @@ private:
 	const int maxTestSpeed;
 	const int steerSpeed;
 	const int servoDelayTime;
+
+	int leftPin = 8;  // Arduino pin for left signal (raspberry)
+	int rightPin = 9; // Arduino pin for right signal (raspberry)
+
+	int leftState;   // Read the state of leftPin
+	int rightState; // Read the state of rightPin
 
 	void adjustSpeed(int distanceFront);
 	void steerVehicle(int distanceLeft, int distanceright);

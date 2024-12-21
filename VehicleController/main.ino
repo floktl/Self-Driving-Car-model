@@ -6,7 +6,7 @@
 /*   By: Florian Keitel <fl.keitelgmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 22:53:24 by Florian Kei       #+#    #+#             */
-/*   Updated: 2024/12/21 17:33:31 by Florian Kei      ###   ########.fr       */
+/*   Updated: 2024/12/21 18:42:13 by Florian Kei      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,10 @@ DistSensor rightSensor(2, 3);
 
 VehicleController vehicle(mainMotor, steering, frontSensor, leftSensor, rightSensor);
 
+//	for motor controller
 int pin12 = 12;
 int pin11 = 11;
+
 
 void setup() {
 	pinMode(pin12, OUTPUT);
@@ -33,5 +35,6 @@ void setup() {
 void loop() {
 	digitalWrite(pin12,HIGH);
 	digitalWrite(pin11,LOW);
+
 	vehicle.loop();
 }
