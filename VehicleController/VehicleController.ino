@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   VehicleController.ino                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Florian Keitel <fl.keitelgmail.com>        +#+  +:+       +#+        */
+/*   By: fkeitel <fkeitel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 22:33:13 by Florian Kei       #+#    #+#             */
-/*   Updated: 2024/12/20 23:14:15 by Florian Kei      ###   ########.fr       */
+/*   Updated: 2024/12/21 15:23:12 by fkeitel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ VehicleController::VehicleController(ESCMotor motor,
 		steerSpeed(10),
 		servoDelayTime(10) {}
 
+// setup function to setup all pins and start values for the vehicle
 void VehicleController::setup()
 {
 	mainMotor.initialize();
@@ -36,6 +37,7 @@ void VehicleController::setup()
 	Serial.println("Vehicle Initialized and Ready!");
 }
 
+// main loop. which will run continiously
 void VehicleController::loop()
 {
 	int distanceFront = frontSensor.getDistance();
@@ -51,6 +53,7 @@ void VehicleController::loop()
 	delay(servoDelayTime);
 }
 
+// adjust the speed, if the front distance is free of objects
 void VehicleController::adjustSpeed(int distanceFront)
 {
 	int speed = mainMotor.getSpeed();
@@ -61,6 +64,7 @@ void VehicleController::adjustSpeed(int distanceFront)
 	mainMotor.setSpeed(speed);
 }
 
+//	steer the vehcicle,
 void VehicleController::steerVehicle(int distanceLeft)
 {
 	if (distanceLeft < 30 && distanceLeft > 0)

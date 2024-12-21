@@ -13,7 +13,7 @@
 // const int echoPin = 7;  // ECHO pin connected to Arduino Pin 7
 
 // const unsigned int min_left = 50;
-// const unsigned int max_right = 130;
+// const unsigned int max_right = 130;gi
 // const unsigned int steer_speed = 10;
 // const unsigned int servo_delay_time = 10;
 
