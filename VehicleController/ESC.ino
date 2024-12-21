@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ESC.ino                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fkeitel <fkeitel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: Florian Keitel <fl.keitelgmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 23:06:04 by Florian Kei       #+#    #+#             */
-/*   Updated: 2024/12/21 15:10:23 by fkeitel          ###   ########.fr       */
+/*   Updated: 2024/12/21 17:13:36 by Florian Kei      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,24 +44,28 @@ void SteeringServo::initialize()
 {
 	servo.attach(pin);
 	servo.write(position);
+	delay(10);
 }
 
 void SteeringServo::steerLeft(int step)
 {
 	position = constrain(position - step, minLeft, maxRight);
 	servo.write(position);
+	delay(10);
 }
 
 void SteeringServo::steerRight(int step)
 {
 	position = constrain(position + step, minLeft, maxRight);
 	servo.write(position);
+	delay(10);
 }
 
 void SteeringServo::center()
 {
 	position = 90;
 	servo.write(position);
+	delay(10);
 }
 
 int SteeringServo::getPosition() const

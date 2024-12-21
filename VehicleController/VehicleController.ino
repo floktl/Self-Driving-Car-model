@@ -3,24 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   VehicleController.ino                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fkeitel <fkeitel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: Florian Keitel <fl.keitelgmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 22:33:13 by Florian Kei       #+#    #+#             */
-/*   Updated: 2024/12/21 15:23:12 by fkeitel          ###   ########.fr       */
+/*   Updated: 2024/12/21 17:47:56 by Florian Kei      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "VehicleController.h"
 
+
 // ----------------------- VehicleController implementation -------------------
 VehicleController::VehicleController(ESCMotor motor,
 									SteeringServo servo,
 									DistSensor front,
-									DistSensor left)
+									DistSensor left,
+									DistSensor right)
 	: mainMotor(motor),
 		steering(servo),
 		frontSensor(front),
 		leftSensor(left),
+		rightSensor(right),
 		lastFrontDistance(0),
 		maxTestSpeed(1500),
 		steerSpeed(10),
@@ -33,6 +36,7 @@ void VehicleController::setup()
 	steering.initialize();
 	frontSensor.initialize();
 	leftSensor.initialize();
+	rightSensor.initialize();
 	Serial.begin(9600);
 	Serial.println("Vehicle Initialized and Ready!");
 }
@@ -42,11 +46,12 @@ void VehicleController::loop()
 {
 	int distanceFront = frontSensor.getDistance();
 	int distanceLeft = leftSensor.getDistance();
+	int distanceright = rightSensor.getDistance();
 
 	if (distanceFront > 0 && distanceFront != lastFrontDistance)
 	{
 		adjustSpeed(distanceFront);
-		steerVehicle(distanceLeft);
+		steerVehicle(distanceLeft, distanceright);
 		lastFrontDistance = distanceFront;
 	}
 
@@ -65,13 +70,20 @@ void VehicleController::adjustSpeed(int distanceFront)
 }
 
 //	steer the vehcicle,
-void VehicleController::steerVehicle(int distanceLeft)
+void VehicleController::steerVehicle(int distanceLeft, int distanceright)
 {
 	if (distanceLeft < 30 && distanceLeft > 0)
 	{
 		if (steering.getPosition() >= steering.minLeft)
 		{
 			steering.steerLeft(steerSpeed);
+		}
+	}
+	else if (distanceright < 30 && distanceright > 0)
+	{
+		if (steering.getPosition() <= steering.maxRight)
+		{
+			steering.steerRight(steerSpeed);
 		}
 	}
 	else if (steering.getPosition() != 90)
