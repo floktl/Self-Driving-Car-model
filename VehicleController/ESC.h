@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ESC.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fkeitel <fkeitel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: Florian Keitel <fl.keitelgmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 22:54:24 by Florian Kei       #+#    #+#             */
-/*   Updated: 2024/12/21 15:21:33 by fkeitel          ###   ########.fr       */
+/*   Updated: 2024/12/21 22:33:39 by Florian Kei      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@
 class ESCMotor
 {
 private:
-	Servo motor;
-	int pin;
-	int speed;
+	Servo		motor;
+	const int	pin;
+	int			speed;
 
 public:
 	// constructor
@@ -35,9 +35,9 @@ public:
 class SteeringServo
 {
 private:
-	Servo	servo;
-	int		pin;
-	int		position;
+	Servo		servo;
+	const int	pin;
+	int			position;
 
 public:
 	//max steering angles

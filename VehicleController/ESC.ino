@@ -6,14 +6,13 @@
 /*   By: Florian Keitel <fl.keitelgmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 23:06:04 by Florian Kei       #+#    #+#             */
-/*   Updated: 2024/12/21 17:13:36 by Florian Kei      ###   ########.fr       */
+/*   Updated: 2024/12/21 22:20:38 by Florian Kei      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ESC.h"
 
-
-// ESCMotor implementation
+// ESCMotor constructor
 ESCMotor::ESCMotor(int motorPin) : pin(motorPin), speed(1000) {}
 
 void ESCMotor::initialize()
@@ -31,10 +30,10 @@ void ESCMotor::setSpeed(int newSpeed)
 
 int ESCMotor::getSpeed() const
 {
-	return speed;
+	return (speed);
 }
 
-// SteeringServo implementation
+// SteeringServo constructor
 SteeringServo::SteeringServo(int servoPin)
 	: pin(servoPin), position(90),
 		minLeft(MIN_LEFT_STEERING),
@@ -70,5 +69,5 @@ void SteeringServo::center()
 
 int SteeringServo::getPosition() const
 {
-	return position;
+	return (position);
 }

@@ -6,12 +6,11 @@
 /*   By: Florian Keitel <fl.keitelgmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 22:33:13 by Florian Kei       #+#    #+#             */
-/*   Updated: 2024/12/21 18:50:41 by Florian Kei      ###   ########.fr       */
+/*   Updated: 2024/12/21 22:41:58 by Florian Kei      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "VehicleController.h"
-
 
 // ----------------------- VehicleController implementation -------------------
 VehicleController::VehicleController(ESCMotor motor,
@@ -24,21 +23,23 @@ VehicleController::VehicleController(ESCMotor motor,
 		frontSensor(front),
 		leftSensor(left),
 		rightSensor(right),
-		lastFrontDistance(0),
-		maxTestSpeed(1500),
-		steerSpeed(10),
-		servoDelayTime(10) {}
+		lastFrontDistance(0) {}
 
 // setup function to setup all pins and start values for the vehicle
-void VehicleController::setup()
+void VehicleController::vehicle_setup()
 {
+	// init all subcomponents
 	mainMotor.initialize();
 	steering.initialize();
 	frontSensor.initialize();
 	leftSensor.initialize();
 	rightSensor.initialize();
+
+	// set pins from raspberry as input
 	pinMode(leftPin, INPUT);  // Set leftPin as input
 	pinMode(rightPin, INPUT); // Set rightPin as input
+
+	// debugging
 	Serial.begin(9600);
 	Serial.println("Vehicle Initialized and Ready!");
 }
@@ -50,16 +51,19 @@ void VehicleController::loop()
 	int distanceLeft = leftSensor.getDistance();
 	int distanceright = rightSensor.getDistance();
 
-	leftState = digitalRead(leftPin);   // Read the state of leftPin
-	rightState = digitalRead(rightPin); // Read the state of rightPin
+	leftState = digitalRead(leftPin);   // Read the state of raspberry left
+	rightState = digitalRead(rightPin); // Read the state of raspberry right
 	Serial.println(leftPin);
-	if (leftState != HIGH && rightState != HIGH &&  distanceFront > 0 && distanceFront != lastFrontDistance)
+
+	//	steer with sensor
+	if (leftState != HIGH && rightState != HIGH &&  distanceFront > 0
+		&& distanceFront != lastFrontDistance)
 	{
 		adjustSpeed(distanceFront);
 		steerVehicle(distanceLeft, distanceright);
 		lastFrontDistance = distanceFront;
 	}
-	else
+	else // manuial control over raspberry commands
 	{
 		if (leftState == HIGH)
 		{  // If the left signal is HIGH, move the servo left
@@ -81,11 +85,14 @@ void VehicleController::loop()
 	delay(servoDelayTime);
 }
 
+//------------------------------- private functions ----------------------------
+
 // adjust the speed, if the front distance is free of objects
 void VehicleController::adjustSpeed(int distanceFront)
 {
 	int speed = mainMotor.getSpeed();
-	if (distanceFront < 60)
+
+	if (distanceFront < front_max_distance)
 	{
 		speed = (speed > 1300) ? speed - 100 : speed + 100;
 	}
