@@ -6,7 +6,7 @@
 /*   By: Florian Keitel <fl.keitelgmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 22:32:36 by Florian Kei       #+#    #+#             */
-/*   Updated: 2024/12/21 22:42:04 by Florian Kei      ###   ########.fr       */
+/*   Updated: 2024/12/27 15:31:13 by Florian Kei      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ private:
 	const int	steerSpeed = 10;
 	const int	servoDelayTime = 10;
 	const int	front_max_distance = 60;
+	const int	side_max_distance = 30;
 
 	const int 	leftPin = 8;  // Arduino pin for left signal (raspberry)
 	const int 	rightPin = 9; // Arduino pin for right signal (raspberry)

@@ -6,7 +6,7 @@
 /*   By: Florian Keitel <fl.keitelgmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 22:33:13 by Florian Kei       #+#    #+#             */
-/*   Updated: 2024/12/21 22:41:58 by Florian Kei      ###   ########.fr       */
+/*   Updated: 2024/12/27 15:36:22 by Florian Kei      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,22 +63,20 @@ void VehicleController::loop()
 		steerVehicle(distanceLeft, distanceright);
 		lastFrontDistance = distanceFront;
 	}
-	else // manuial control over raspberry commands
+	else // manuial control over remote commands
 	{
-		if (leftState == HIGH)
+		if (leftState == HIGH && rightState == LOW)
 		{  // If the left signal is HIGH, move the servo left
-			Serial.println("Left");
 			if (steering.getPosition() - steerSpeed > steering.minLeft)
 			{
-				steering.steerLeft(10);
+				steering.steerLeft(steerSpeed);
 			}
 		}
-		if (rightState == HIGH)
+		else if (rightState == HIGH && leftState == LOW)
 		{ // If the right signal is HIGH, move the servo right
-			Serial.println("Right");
 			if (steering.getPosition() + steerSpeed < steering.maxRight)
 			{
-				steering.steerRight(10);
+				steering.steerRight(steerSpeed);
 			}
 		}
 	}
@@ -102,21 +100,21 @@ void VehicleController::adjustSpeed(int distanceFront)
 //	steer the vehcicle,
 void VehicleController::steerVehicle(int distanceLeft, int distanceright)
 {
-	if (distanceLeft < 30 && distanceLeft > 0)
+	if (distanceLeft < side_max_distance && distanceLeft > 0)
 	{
 		if (steering.getPosition() >= steering.minLeft)
 		{
 			steering.steerLeft(steerSpeed);
 		}
 	}
-	else if (distanceright < 30 && distanceright > 0)
+	else if (distanceright < side_max_distance && distanceright > 0)
 	{
 		if (steering.getPosition() <= steering.maxRight)
 		{
 			steering.steerRight(steerSpeed);
 		}
 	}
-	else if (steering.getPosition() != 90)
+	else if (steering.getPosition() != steering.middle_pos)
 	{
 		steering.center();
 	}

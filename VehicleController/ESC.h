@@ -6,7 +6,7 @@
 /*   By: Florian Keitel <fl.keitelgmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 22:54:24 by Florian Kei       #+#    #+#             */
-/*   Updated: 2024/12/21 22:33:39 by Florian Kei      ###   ########.fr       */
+/*   Updated: 2024/12/27 15:38:01 by Florian Kei      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,9 @@ private:
 
 public:
 	//max steering angles
-	const unsigned int minLeft;
-	const unsigned int maxRight;
+	const unsigned int	middle_pos = 90;
+	const unsigned int	minLeft;
+	const unsigned int	maxRight;
 
 	// Constructor
 	SteeringServo(int servoPin);
