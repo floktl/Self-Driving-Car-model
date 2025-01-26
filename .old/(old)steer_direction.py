@@ -1,4 +1,7 @@
-import RPi.GPIO as GPIO
+# this raspberry script reads the keys from the remote keyboard via ssh
+# (old version, in build)
+
+import RPi.GPIO as GPIO # type: ignore
 import sys
 import termios
 import tty

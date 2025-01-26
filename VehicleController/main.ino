@@ -6,13 +6,17 @@
 /*   By: Florian Keitel <fl.keitelgmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 22:53:24 by Florian Kei       #+#    #+#             */
-/*   Updated: 2024/12/21 22:32:04 by Florian Kei      ###   ########.fr       */
+/*   Updated: 2025/01/26 11:08:08 by Florian Kei      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+/*
+	C++ Program to steer the vehicle automously or via remote control
+ */
+
 #include "VehicleController.h"
 
-// Pin Configuration
+// Pin Configuration on arduino
 ESCMotor mainMotor(9);
 SteeringServo steering(10);	// Pin, max left angle, max right angle
 
