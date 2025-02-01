@@ -1,4 +1,5 @@
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
+from mock_gpio_library import GPIO  # Assuming this is saved as mock_gpio_library.py
 import sys
 import termios
 import tty
