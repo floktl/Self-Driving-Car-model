@@ -1,31 +1,18 @@
+import RPi.GPIO as GPIO
 import sys
+import termios
+import tty
 import time
 import select
 import threading
 
-try:
-    import RPi.GPIO as GPIO
-except ModuleNotFoundError:
-    import fake_rpi.RPi.GPIO as GPIO  # Use fake GPIO on non-RPi devices
-
-# Handle cross-platform input
-try:
-    import termios
-    import tty
-    unix_platform = True
-except ImportError:
-    import msvcrt  # Windows alternative
-    unix_platform = False
-
-# Mock GPIO output function for testing on a laptop
-def mock_gpio_output(pin, state):
-    print(f"GPIO Pin {pin} set to {'HIGH' if state else 'LOW'}")
-
-GPIO.output = mock_gpio_output  # Override GPIO output with mock function
+# Disable warnings and cleanup at the start
+GPIO.setwarnings(False)
+GPIO.cleanup()
 
 # Pin setup
-LEFT_PIN = 17   # GPIO pin for left
-RIGHT_PIN = 27  # GPIO pin for right
+LEFT_PIN = 17
+RIGHT_PIN = 27
 FORWARD_PIN = 14
 BACKWARD_PIN = 15
 
@@ -36,33 +23,37 @@ GPIO.setup(RIGHT_PIN, GPIO.OUT)
 GPIO.setup(FORWARD_PIN, GPIO.OUT)
 GPIO.setup(BACKWARD_PIN, GPIO.OUT)
 
-if unix_platform:
-    fd = sys.stdin.fileno()
-    old_settings = termios.tcgetattr(fd)
+# Initialize pins to LOW
+GPIO.output(LEFT_PIN, GPIO.LOW)
+GPIO.output(RIGHT_PIN, GPIO.LOW)
+GPIO.output(FORWARD_PIN, GPIO.LOW)
+GPIO.output(BACKWARD_PIN, GPIO.LOW)
 
-# Shared flags for movement control
+fd = sys.stdin.fileno()
+old_settings = termios.tcgetattr(fd)
+
+# Shared flags
 left_pressed = False
 right_pressed = False
 forward_pressed = False
 backward_pressed = False
-running = True  # To control thread execution
+running = True
+
 
 def get_char_non_blocking():
-    if unix_platform:
-        fd = sys.stdin.fileno()
-        tty.setraw(fd)
-        rlist, _, _ = select.select([sys.stdin], [], [], 0.1)
-        if rlist:
-            char = sys.stdin.read(1)
-            sys.stdin.flush()
-            return char
-    else:
-        if msvcrt.kbhit():
-            return msvcrt.getch().decode('utf-8')
+    """Reads a single character from standard input without blocking."""
+    fd = sys.stdin.fileno()
+    tty.setraw(fd)
+    rlist, _, _ = select.select([sys.stdin], [], [], 0.1)  # Non-blocking with timeout
+    if rlist:
+        return sys.stdin.read(1)
     return None
 
+
 def movement_control():
+    """Thread to control forward/backward movement independently."""
     global forward_pressed, backward_pressed, running
+
     while running:
         if forward_pressed:
             GPIO.output(FORWARD_PIN, GPIO.HIGH)
@@ -73,10 +64,20 @@ def movement_control():
         else:
             GPIO.output(FORWARD_PIN, GPIO.LOW)
             GPIO.output(BACKWARD_PIN, GPIO.LOW)
+
+        # Print status when pins are set LOW
+        if GPIO.input(FORWARD_PIN) == GPIO.LOW:
+            print("Forward pin: LOW")
+        if GPIO.input(BACKWARD_PIN) == GPIO.LOW:
+            print("Backward pin: LOW")
+
         time.sleep(0.1)
 
+
 def steering_control():
+    """Thread to control left/right steering independently."""
     global left_pressed, right_pressed, running
+
     while running:
         if left_pressed:
             GPIO.output(LEFT_PIN, GPIO.HIGH)
@@ -87,7 +88,15 @@ def steering_control():
         else:
             GPIO.output(LEFT_PIN, GPIO.LOW)
             GPIO.output(RIGHT_PIN, GPIO.LOW)
+
+        # Print status when pins are set LOW
+        if GPIO.input(LEFT_PIN) == GPIO.LOW:
+            print("Left pin: LOW")
+        if GPIO.input(RIGHT_PIN) == GPIO.LOW:
+            print("Right pin: LOW")
+
         time.sleep(0.1)
+
 
 def main():
     global left_pressed, right_pressed, forward_pressed, backward_pressed, running
@@ -95,45 +104,55 @@ def main():
     print("Hold 'L' to steer left, 'R' to steer right, 'W' to move forward, 'S' to move backward.")
     print("Press 'Q' to quit.")
 
+    # Start movement and steering control threads
     movement_thread = threading.Thread(target=movement_control)
     steering_thread = threading.Thread(target=steering_control)
+
     movement_thread.start()
     steering_thread.start()
 
     try:
-        while True:
+        while running:
             char = get_char_non_blocking()
+
             if char:
-                if char.lower() == 'q':
+                char = char.lower()
+
+                if char == 'q':  # Quit program
                     print("\nExiting program...")
                     running = False
                     break
-                if char.lower() == 'l' or char.lower() == 'a':
+
+                # Movement controls
+                elif char == 'l':
                     right_pressed = False
                     left_pressed = True
-                elif char.lower() == 'r' or char.lower() == 'd':
+                elif char == 'r':
                     left_pressed = False
                     right_pressed = True
-                elif char.lower() == 'w':
+                elif char == 'w':
                     backward_pressed = False
                     forward_pressed = True
-                elif char.lower() == 's':
+                elif char == 's':
                     forward_pressed = False
                     backward_pressed = True
-                elif char.lower() in [' ', 'x']:
+                elif char in [' ', 'x']:  # Stop all movements
                     left_pressed = False
                     right_pressed = False
                     forward_pressed = False
                     backward_pressed = False
+
     except KeyboardInterrupt:
         print("\nProgram interrupted.")
+
     finally:
-        running = False
+        running = False  # Ensure threads exit gracefully
         movement_thread.join()
         steering_thread.join()
-        if unix_platform:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-        print("GPIO cleanup simulated.")
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        GPIO.cleanup()
+        print("GPIO cleaned up.")
+
 
 if __name__ == "__main__":
     main()
