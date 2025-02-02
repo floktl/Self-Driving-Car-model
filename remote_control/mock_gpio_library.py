@@ -2,6 +2,10 @@ import time
 import sys
 import threading
 import signal
+import termios
+
+fd = sys.stdin.fileno()
+old_settings = termios.tcgetattr(fd)
 
 class MockGPIO:
 	BCM = "BCM"
@@ -63,11 +67,13 @@ def start_display(interval=0.1):
 	except KeyboardInterrupt:
 		print("\nExiting on Ctrl+C...")
 		GPIO.cleanup()
+		termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)  # Restore settings
 		sys.exit(0)
 
 def signal_handler(sig, frame):
 	print("\nExiting on Ctrl+C...")
 	GPIO.cleanup()
+	termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)  # Restore settings
 	sys.exit(0)
 
 signal.signal(signal.SIGINT, signal_handler)

@@ -4,6 +4,10 @@ import time
 import threading
 import sys
 import signal
+import termios
+
+fd = sys.stdin.fileno()
+old_settings = termios.tcgetattr(fd)
 
 # Initialize Pygame
 pygame.init()
@@ -68,6 +72,7 @@ def handle_exit():
 	GPIO.cleanup()
 	pygame.quit()
 	print("GPIO cleaned up. Exiting...")
+	termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)  # Restore settings
 	sys.exit(0)
 
 def signal_handler(sig, frame):
