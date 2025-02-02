@@ -2,78 +2,102 @@ import pygame
 from mock_gpio_library import GPIO  # Mock GPIO for testing
 import time
 import threading
+import sys
+import signal
 
 # Initialize Pygame
 pygame.init()
 
 # Set up display
-screen = pygame.display.set_mode((500, 500))
-pygame.display.set_caption("Key Detection Example")
+WIDTH, HEIGHT = 500, 500
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Car Remote Data")
 
-# Disable warnings and cleanup at the start
+# Colors
+WHITE = (255, 255, 255)
+GRAY = (200, 200, 200)
+BLUE = (0, 0, 255)
+
+# Button positions
+button_positions = {
+	pygame.K_w: (200, 150, 100, 50),  # Up
+	pygame.K_s: (200, 250, 100, 50),  # Down
+	pygame.K_a: (100, 250, 100, 50),  # Left
+	pygame.K_d: (300, 250, 100, 50)   # Right
+}
+
+# GPIO Setup
 GPIO.setwarnings(False)
 GPIO.cleanup()
-
-# Pin setup
-LEFT_PIN = 17
-RIGHT_PIN = 27
-FORWARD_PIN = 14
-BACKWARD_PIN = 15
-
-# GPIO setup
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(LEFT_PIN, GPIO.OUT)
-GPIO.setup(RIGHT_PIN, GPIO.OUT)
-GPIO.setup(FORWARD_PIN, GPIO.OUT)
-GPIO.setup(BACKWARD_PIN, GPIO.OUT)
+LEFT_PIN, RIGHT_PIN, FORWARD_PIN, BACKWARD_PIN = 17, 27, 14, 15
+GPIO.setup([LEFT_PIN, RIGHT_PIN, FORWARD_PIN, BACKWARD_PIN], GPIO.OUT)
+GPIO.output([LEFT_PIN, RIGHT_PIN, FORWARD_PIN, BACKWARD_PIN], GPIO.LOW)
 
-# Initialize pins to LOW
-GPIO.output(LEFT_PIN, GPIO.LOW)
-GPIO.output(RIGHT_PIN, GPIO.LOW)
-GPIO.output(FORWARD_PIN, GPIO.LOW)
-GPIO.output(BACKWARD_PIN, GPIO.LOW)
-
-# Shared flag
+# Shared variables
 running = True
-pressed_keys = set()  # Store active key presses
+pressed_keys = set()
 
 def update_gpio():
 	"""Continuously updates GPIO states based on pressed keys."""
 	global running, pressed_keys
 	while running:
-		if (pygame.K_s not in pressed_keys):
-			GPIO.output(FORWARD_PIN, GPIO.HIGH if pygame.K_w in pressed_keys else GPIO.LOW) #forward
-		if (pygame.K_w not in pressed_keys):
-			GPIO.output(BACKWARD_PIN, GPIO.HIGH if pygame.K_s in pressed_keys else GPIO.LOW) #backward
-		if (pygame.K_d not in pressed_keys):
-			GPIO.output(LEFT_PIN, GPIO.HIGH if pygame.K_a in pressed_keys else GPIO.LOW) #left
-		if (pygame.K_a not in pressed_keys):
-			GPIO.output(RIGHT_PIN, GPIO.HIGH if pygame.K_d in pressed_keys else GPIO.LOW) #right
-		time.sleep(0.05)  # Small delay to reduce CPU usage
+		GPIO.output(FORWARD_PIN, GPIO.HIGH if pygame.K_w in pressed_keys and pygame.K_s not in pressed_keys else GPIO.LOW)
+		GPIO.output(BACKWARD_PIN, GPIO.HIGH if pygame.K_s in pressed_keys and pygame.K_w not in pressed_keys else GPIO.LOW)
+		GPIO.output(LEFT_PIN, GPIO.HIGH if pygame.K_a in pressed_keys and pygame.K_d not in pressed_keys else GPIO.LOW)
+		GPIO.output(RIGHT_PIN, GPIO.HIGH if pygame.K_d in pressed_keys and pygame.K_a not in pressed_keys else GPIO.LOW)
+		time.sleep(0.05)
+
+def draw_buttons():
+	"""Draws arrow buttons on the screen, changing color when pressed."""
+	screen.fill(WHITE)
+	for key, (x, y, w, h) in button_positions.items():
+		if (key in [pygame.K_w, pygame.K_s] and pygame.K_w in pressed_keys and pygame.K_s in pressed_keys) or \
+		(key in [pygame.K_a, pygame.K_d] and pygame.K_a in pressed_keys and pygame.K_d in pressed_keys):
+			color = GRAY
+		else:
+			color = BLUE if key in pressed_keys else GRAY
+		pygame.draw.rect(screen, color, (x, y, w, h))
+		pygame.draw.rect(screen, (0, 0, 0), (x, y, w, h), 2)  # Border
+	pygame.display.flip()
+
+def handle_exit():
+	"""Cleans up and exits the program."""
+	global running
+	running = False
+	GPIO.cleanup()
+	pygame.quit()
+	print("GPIO cleaned up. Exiting...")
+	sys.exit(0)
+
+def signal_handler(sig, frame):
+	"""Handles Ctrl+C signal."""
+	print("\nCtrl+C detected, exiting gracefully...")
+	handle_exit()
+
+signal.signal(signal.SIGINT, signal_handler)
 
 def main():
 	global running, pressed_keys
 
-	# Start GPIO control thread
 	gpio_thread = threading.Thread(target=update_gpio)
 	gpio_thread.start()
 
 	while running:
-		pygame.time.delay(50)  # Reduce CPU usage
-
+		pygame.time.delay(50)
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
-				running = False
+				handle_exit()
 			elif event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_ESCAPE:  # Exit on ESC key
+					print("\nESC key detected, exiting gracefully...")
+					handle_exit()
 				pressed_keys.add(event.key)
 			elif event.type == pygame.KEYUP:
 				pressed_keys.discard(event.key)
+		draw_buttons()
 
-	running = False
 	gpio_thread.join()
-	GPIO.cleanup()
-	pygame.quit()
-	print("GPIO cleaned up.")
 
 if __name__ == "__main__":
 	main()
