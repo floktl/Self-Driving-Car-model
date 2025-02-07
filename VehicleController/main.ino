@@ -29,13 +29,13 @@ DistSensor rightSensor(2, 3);
 VehicleController car(mainMotor, steering, frontSensor, leftSensor, rightSensor);
 
 //	for L293d servo controller
-int high_signal = 12;
-int high_signal = 11;
+int high_signal1 = 12;
+int high_signal2 = 11;
 
 void setup() {
 
-	pinMode(high_signal, OUTPUT);
-	pinMode(high_signal, OUTPUT);
+	pinMode(high_signal1, OUTPUT);
+	pinMode(high_signal2, OUTPUT);
 
 	car.vehicle_setup();
 }
@@ -43,8 +43,8 @@ void setup() {
 // main loop
 void loop() {
 
-	digitalWrite(high_signal,HIGH);
-	digitalWrite(high_signal,LOW);
+	digitalWrite(high_signal1,HIGH);
+	digitalWrite(high_signal2,LOW);
 
 	car.loop();
 }
