@@ -1,5 +1,8 @@
-import pygame
+# script for steering the car remotly, data needs to transmitted wirelessly
+
 from mock_gpio_library import GPIO  # Mock GPIO for testing
+#import RPi.GPIO as GPIO  #Real GPIO lybrary
+import pygame
 import time
 import threading
 import sys
