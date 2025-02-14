@@ -3,7 +3,7 @@ Currently possible:
 -connect to raspberry
 -establish wireless communucation without 42 Wifi (maybe through server)
 2.  Draw electrical schematic
--with Santosh Later
+-Done, but needs check again, bus connection between rasp and arduino necessary
 3.  Get radio signal transmitter/receiver to avoid connection via SSH
 -find and buy receiver and transmitter
 4. Implement ISP/I2C connection between Raspberry Pi and Arduino to transfer bidirectional data and signals
