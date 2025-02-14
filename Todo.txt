@@ -1,0 +1,19 @@
+Currently possible:
+1. resolve raspberry connection issue
+-connect to raspberry
+-establish wireless communucation without 42 Wifi (maybe through server)
+2.  Draw electrical schematic
+-with Santosh Later
+3.  Get radio signal transmitter/receiver to avoid connection via SSH
+-find and buy receiver and transmitter
+4. Implement ISP/I2C connection between Raspberry Pi and Arduino to transfer bidirectional data and signals
+-needs raspberry access
+
+Soon possible:
+1. Fix motor mount CAD and print new model
+2. Test code, especially the main motor
+-Testing main motor, for that CAD for motormount needs tbd
+
+Parallel:
+1. Design first simple PCB with Arduino and Raspberry Pi still connected
+-part time work, not restricted through other points
