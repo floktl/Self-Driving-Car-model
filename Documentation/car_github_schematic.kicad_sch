@@ -1474,7 +1474,7 @@
 	)
 	(wire
 		(pts
-			(xy 106.68 85.09) (xy 91.44 85.09)
+			(xy 106.68 87.63) (xy 62.23 87.63)
 		)
 		(stroke
 			(width 0)
@@ -1484,7 +1484,7 @@
 	)
 	(wire
 		(pts
-			(xy 106.68 77.47) (xy 106.68 85.09)
+			(xy 106.68 87.63) (xy 106.68 77.47)
 		)
 		(stroke
 			(width 0)
@@ -1504,7 +1504,7 @@
 	)
 	(symbol
 		(lib_id "MCU_Module:Arduino_UNO_R3")
-		(at 78.74 85.09 0)
+		(at 49.53 87.63 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -1513,7 +1513,7 @@
 		(fields_autoplaced yes)
 		(uuid "3aa7ae76-95e7-4d97-9325-ce38140d0d10")
 		(property "Reference" "A1"
-			(at 86.0141 57.15 0)
+			(at 56.8041 59.69 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1522,7 +1522,7 @@
 			)
 		)
 		(property "Value" "Arduino_UNO_R3"
-			(at 86.0141 59.69 0)
+			(at 56.8041 62.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1531,7 +1531,7 @@
 			)
 		)
 		(property "Footprint" "Module:Arduino_UNO_R3"
-			(at 78.74 85.09 0)
+			(at 49.53 87.63 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1541,7 +1541,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.arduino.cc/en/Main/arduinoBoardUno"
-			(at 78.74 85.09 0)
+			(at 49.53 87.63 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1550,7 +1550,7 @@
 			)
 		)
 		(property "Description" "Arduino UNO Microcontroller Module, release 3"
-			(at 78.74 85.09 0)
+			(at 49.53 87.63 0)
 			(effects
 				(font
 					(size 1.27 1.27)
