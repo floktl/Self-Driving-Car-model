@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ESC.ino                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Florian Keitel <fl.keitelgmail.com>        +#+  +:+       +#+        */
+/*   By: gstronge <gstronge@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 23:06:04 by Florian Kei       #+#    #+#             */
-/*   Updated: 2024/12/27 15:32:02 by Florian Kei      ###   ########.fr       */
+/*   Updated: 2025/02/24 18:41:52 by gstronge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void ESCMotor::initialize()
 
 void ESCMotor::setSpeed(int newSpeed)
 {
-	speed = constrain(newSpeed, 1000, 2000);
+	speed = constrain(newSpeed, 1300, 1500);
 	motor.writeMicroseconds(speed);
 }
 
@@ -48,7 +48,10 @@ void SteeringServo::initialize()
 
 void SteeringServo::steerLeft(int step)
 {
+        // Serial.println("POSITION LEFT: ");
+        // Serial.println(steering.getPosition());
 	position = constrain(position - step, minLeft, maxRight);
+      Serial.println(position);
 	servo.write(position);
 	delay(10);
 }

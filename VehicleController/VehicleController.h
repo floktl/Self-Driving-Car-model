@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   VehicleController.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Florian Keitel <fl.keitelgmail.com>        +#+  +:+       +#+        */
+/*   By: gstronge <gstronge@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 22:32:36 by Florian Kei       #+#    #+#             */
-/*   Updated: 2024/12/27 15:31:13 by Florian Kei      ###   ########.fr       */
+/*   Updated: 2025/02/24 18:36:33 by gstronge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,11 @@ private:
 
 	const int 	leftPin = 8;  // Arduino pin for left signal (raspberry)
 	const int 	rightPin = 9; // Arduino pin for right signal (raspberry)
+	const int 	upPin = 2; // Arduino pin for forward signal (raspberry)
 
 	int			leftState;   // Read the state of leftPin
 	int			rightState; // Read the state of rightPin
+	int			upState; // Read the state of upPin
 
 	void adjustSpeed(int distanceFront);
 	void steerVehicle(int distanceLeft, int distanceright);

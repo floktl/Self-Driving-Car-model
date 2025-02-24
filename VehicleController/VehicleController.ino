@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   VehicleController.ino                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Florian Keitel <fl.keitelgmail.com>        +#+  +:+       +#+        */
+/*   By: gstronge <gstronge@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 22:33:13 by Florian Kei       #+#    #+#             */
-/*   Updated: 2025/01/23 19:02:32 by Florian Kei      ###   ########.fr       */
+/*   Updated: 2025/02/24 18:42:03 by gstronge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,48 +38,56 @@ void VehicleController::vehicle_setup()
 	// set pins from raspberry as input
 	pinMode(leftPin, INPUT);  // Set leftPin as input
 	pinMode(rightPin, INPUT); // Set rightPin as input
+	pinMode(upPin, INPUT); // Set rightPin as input
 
 	// debugging
 	Serial.begin(9600);
 	Serial.println("Vehicle Initialized and Ready!");
-}
+  steering.center();
+  }
 
 // main loop. which will run continiously
 void VehicleController::loop()
 {
-	int distanceFront = frontSensor.getDistance();
-	int distanceLeft = leftSensor.getDistance();
-	int distanceright = rightSensor.getDistance();
+	// int distanceFront = frontSensor.getDistance();
+	// int distanceLeft = leftSensor.getDistance();
+	// int distanceright = rightSensor.getDistance();
 
 	leftState = digitalRead(leftPin);   // Read the state of raspberry left
 	rightState = digitalRead(rightPin); // Read the state of raspberry right
-	Serial.println(leftPin);
+	upState = digitalRead(upPin); // Read the state of raspberry right
+	// Serial.println("Position: ");
+	// Serial.println(steering.getPosition());
 
 	//	steer with sensor
-	if (leftState != HIGH && rightState != HIGH &&  distanceFront > 0
-		&& distanceFront != lastFrontDistance)
-	{
-		adjustSpeed(distanceFront);
-		steerVehicle(distanceLeft, distanceright);
-		lastFrontDistance = distanceFront;
-	}
-	else // manuial control over remote commands
-	{
+	// if (leftState != HIGH && rightState != HIGH &&  distanceFront > 0
+	// 	&& distanceFront != lastFrontDistance)
+	// {
+	// 	adjustSpeed(distanceFront);
+	// 	steerVehicle(distanceLeft, distanceright);
+	// 	lastFrontDistance = distanceFront;
+	// }
+	// else // manuial control over remote commands
+	// {
 		if (leftState == HIGH && rightState == LOW)
 		{  // If the left signal is HIGH, move the servo left
-			if (steering.getPosition() - steerSpeed > steering.minLeft)
-			{
-				steering.steerLeft(steerSpeed);
-			}
+			steering.steerLeft(steerSpeed);
 		}
 		else if (rightState == HIGH && leftState == LOW)
 		{ // If the right signal is HIGH, move the servo right
-			if (steering.getPosition() + steerSpeed < steering.maxRight)
-			{
-				steering.steerRight(steerSpeed);
-			}
+			steering.steerRight(steerSpeed);
 		}
-	}
+		if (upState == HIGH)
+		{
+			mainMotor.setSpeed(mainMotor.getSpeed() + 20);
+		}
+		else
+		{
+			mainMotor.setSpeed(mainMotor.getSpeed() - 20);
+		}
+		// Serial.println("SPEED: ");
+		Serial.println(mainMotor.getSpeed());
+	// }
 	delay(servoDelayTime);
 }
 
