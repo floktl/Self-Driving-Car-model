@@ -24,7 +24,7 @@ void ESCMotor::initialize()
 
 void ESCMotor::setSpeed(int newSpeed)
 {
-	speed = constrain(newSpeed, 1300, 1500);
+	speed = constrain(newSpeed, 1300, 1700);
 	motor.writeMicroseconds(speed);
 }
 
