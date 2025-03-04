@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ESC.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Florian Keitel <fl.keitelgmail.com>        +#+  +:+       +#+        */
+/*   By: gstronge <gstronge@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 22:54:24 by Florian Kei       #+#    #+#             */
-/*   Updated: 2024/12/27 15:38:01 by Florian Kei      ###   ########.fr       */
+/*   Updated: 2025/03/03 15:52:47 by gstronge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

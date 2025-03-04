@@ -6,20 +6,25 @@
 /*   By: gstronge <gstronge@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 23:06:04 by Florian Kei       #+#    #+#             */
-/*   Updated: 2025/02/24 18:41:52 by gstronge         ###   ########.fr       */
+/*   Updated: 2025/03/03 16:30:10 by gstronge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ESC.h"
 
 // ESCMotor constructor
-ESCMotor::ESCMotor(int motorPin) : pin(motorPin), speed(1000) {}
+ESCMotor::ESCMotor(int motorPin) : pin(motorPin), speed(1700) {}
 
 void ESCMotor::initialize()
 {
 	motor.attach(pin);
-	motor.writeMicroseconds(speed);
-	delay(2000); // Allow the ESC to rrm
+	int temp_speed = speed;
+	while (temp_speed > 1300)
+	{
+		motor.writeMicroseconds(temp_speed);
+		delay(100); // Allow the ESC to
+		temp_speed--;
+	}
 }
 
 void ESCMotor::setSpeed(int newSpeed)

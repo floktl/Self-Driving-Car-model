@@ -6,7 +6,7 @@
 /*   By: gstronge <gstronge@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 22:53:24 by Florian Kei       #+#    #+#             */
-/*   Updated: 2025/02/24 18:32:11 by gstronge         ###   ########.fr       */
+/*   Updated: 2025/03/03 16:16:23 by gstronge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void setup() {
 	pinMode(high_signal2, OUTPUT);
 
 	car.vehicle_setup();
+	// mainMotor.setSpeed(1300);
 }
 
 // main loop

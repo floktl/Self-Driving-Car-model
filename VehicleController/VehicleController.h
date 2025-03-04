@@ -6,7 +6,7 @@
 /*   By: gstronge <gstronge@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 22:32:36 by Florian Kei       #+#    #+#             */
-/*   Updated: 2025/02/24 18:36:33 by gstronge         ###   ########.fr       */
+/*   Updated: 2025/03/03 15:44:00 by gstronge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ private:
 
 	int 		lastFrontDistance;
 	const int	maxTestSpeed = 1500;
-	const int	steerSpeed = 10;
-	const int	servoDelayTime = 10;
+	const int	steerSpeed = 2;
+	const int	servoDelayTime = 2;
 	const int	front_max_distance = 60;
 	const int	side_max_distance = 30;
 
