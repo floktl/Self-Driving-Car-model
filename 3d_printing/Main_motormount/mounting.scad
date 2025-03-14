@@ -1,6 +1,6 @@
 fn=64;		// Resolution for circular shapes
 $fn=fn;		// Set global resolution for circles
-
+//? fragment; sizes 
 // Motor dimensions
 motor_d=36;			// Motor diameter
 motor_l=60;			// Motor length
@@ -12,7 +12,7 @@ plate_gear_hole_d = 13.5;	// Diameter of gear hole
 plate_gear_hole_l = 16;		// Depth of gear hole
 
 // Bottom screw offsets
-bottom_screw_1_gap_y = 20;
+bottom_screw_1_gap_y = 15;
 bottom_screw_2_gap_y = 15;
 bottom_screw_1_gap_x = 4;
 bottom_screw_2_gap_x = 37;
@@ -33,16 +33,18 @@ motor_plate_x_off = 1;
 difference()
 {
 	translate([0,0,bottom_t])
+	//? union?
 	union()
 	{
 		// Add motor mounting plate
+		//? translate
 		translate([motor_l,motor_case_d/2,motor_case_d/2])
 		rotate([0,90,0])
 		plate(plate_h=plate_h);
-
 		// Create the motor casing with subtractions for motor and cutouts
 		difference()
 		{
+			//test();
 			motor_case();
 
 			// Subtract space for motor inside the case
@@ -90,25 +92,32 @@ module bottom_screws()
 {
 	translate([bottom_screw_1_gap_x, (motor_d-bottom_screw_1_gap_y)/2, 0])
 	{
-		screw();
+		screwCube();
 		translate([0,bottom_screw_1_gap_y,0])
-		screw();
+		screwCube();
 	}
 
 	translate([bottom_screw_2_gap_x, (motor_d-bottom_screw_2_gap_y)/2, 0])
 	{
-		screw();
+		screwCube();
 		translate([0,bottom_screw_2_gap_y,0])
-		screw();
+		screwCube();
 	}
+}
+
+module screwCube(width=5, depth=10, height=20)
+{
+    cube([width,depth,height], true); // Top
+    translate([0,0,8]) //5 (0 point) 3mm nut height
+	cube([width+2,depth,height], true); // Bottom
 }
 
 // Creates a screw with a head and shaft
 module screw(d1=8, d2=5, l2=20, l1=50)
 {
-	cylinder(d=d1, h=l1, $fn=fn/4);  // Main screw body
+	cylinder(d=d1, h=l1, $fn=fn/4);  // Top screw (body)
 	translate([0,0,-l2])
-	cylinder(d=d2, h=l2, $fn=fn/4);  // Screw head
+	cylinder(d=d2, h=l2, $fn=fn/4);  // Bottom screw (head)
 }
 
 // Creates the motor shape inside the casing
@@ -133,7 +142,7 @@ module plate(plate_h=1.5)
 		difference()
 		{
 			circle(d=motor_case_d);       // Outer plate diameter
-			circle(d=plate_gear_hole_d);   // Gear hole cutout
+		  circle(d=plate_gear_hole_d);   // Gear hole cutout
 
 			// Screw holes at each quadrant of the plate
 			translate([plate_screw_off,0,0])
