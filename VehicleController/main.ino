@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.ino                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Florian Keitel <fl.keitelgmail.com>        +#+  +:+       +#+        */
+/*   By: gstronge <gstronge@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 22:53:24 by Florian Kei       #+#    #+#             */
-/*   Updated: 2025/01/26 11:08:08 by Florian Kei      ###   ########.fr       */
+/*   Updated: 2025/03/03 16:16:23 by gstronge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include "VehicleController.h"
 
 // Pin Configuration on arduino
-ESCMotor mainMotor(9);
+ESCMotor mainMotor(13);
 SteeringServo steering(10);	// Pin, max left angle, max right angle
 
 // trigger and echo pins for sensor
@@ -38,6 +38,7 @@ void setup() {
 	pinMode(high_signal2, OUTPUT);
 
 	car.vehicle_setup();
+	// mainMotor.setSpeed(1300);
 }
 
 // main loop

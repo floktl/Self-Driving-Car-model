@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   VehicleController.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Florian Keitel <fl.keitelgmail.com>        +#+  +:+       +#+        */
+/*   By: gstronge <gstronge@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 22:32:36 by Florian Kei       #+#    #+#             */
-/*   Updated: 2024/12/27 15:31:13 by Florian Kei      ###   ########.fr       */
+/*   Updated: 2025/03/07 17:50:18 by gstronge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,16 +31,20 @@ private:
 
 	int 		lastFrontDistance;
 	const int	maxTestSpeed = 1500;
-	const int	steerSpeed = 10;
-	const int	servoDelayTime = 10;
+	const int	steerSpeed = 30;
+	const int	servoDelayTime = 2;
 	const int	front_max_distance = 60;
 	const int	side_max_distance = 30;
 
 	const int 	leftPin = 8;  // Arduino pin for left signal (raspberry)
-	const int 	rightPin = 9; // Arduino pin for right signal (raspberry)
+	const int 	rightPin = 3; // Arduino pin for right signal (raspberry)
+	const int 	upPin = 9; // Arduino pin for forward signal (raspberry)
+	const int 	downPin = 2; // Arduino pin for forward signal (raspberry)
 
 	int			leftState;   // Read the state of leftPin
 	int			rightState; // Read the state of rightPin
+	int			upState; // Read the state of upPin
+	int			downState; // Read the state of upPin
 
 	void adjustSpeed(int distanceFront);
 	void steerVehicle(int distanceLeft, int distanceright);
