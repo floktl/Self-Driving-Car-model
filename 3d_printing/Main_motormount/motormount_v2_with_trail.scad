@@ -54,15 +54,21 @@ difference()
 			// Create cutout section inside motor case
 			translate([0,0,motor_case_d/2])
 			cube([motor_l-18, motor_case_d, motor_case_d/2]);
+            
 		}
 
-		// Bottom support base for the motor casing
+		// Bottom support base for the motor casing (bottom plate)
 		translate([0,0,-bottom_t])
 		cube([motor_l+plate_h, motor_case_d, bottom_t]);
-    
+    difference() {   
     // Back support plate (ass)
-    translate([-4,0,-bottom_t])
-    cube([4,motor_case_d,(motor_case_d/2)+bottom_t]);
+     translate([-4,0,-bottom_t])
+     cube([4,motor_case_d,(motor_case_d/2)+bottom_t]);
+		 
+     translate([-5,front_t,front_t])
+		 motor();
+    }
+        
 	}
 
 	// Cutting out space for motor plate attachment
