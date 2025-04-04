@@ -6,7 +6,7 @@
 /*   By: gstronge <gstronge@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 22:53:24 by Florian Kei       #+#    #+#             */
-/*   Updated: 2025/03/03 16:16:23 by gstronge         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:30:58 by gstronge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,31 +21,19 @@ ESCMotor mainMotor(13);
 SteeringServo steering(10);	// Pin, max left angle, max right angle
 
 // trigger and echo pins for sensor
-DistSensor frontSensor(6, 7);
-DistSensor leftSensor(4, 5);
-DistSensor rightSensor(2, 3);
+DistSensor frontSensor(4, 6);//(trigger, echo)
+DistSensor leftSensor(5, 7);
+DistSensor rightSensor(11, 12);
 
 // constructing the vehicle class with subcomponents
 VehicleController car(mainMotor, steering, frontSensor, leftSensor, rightSensor);
 
-//	for L293d servo controller
-int high_signal1 = 12;
-int high_signal2 = 11;
 
 void setup() {
-
-	pinMode(high_signal1, OUTPUT);
-	pinMode(high_signal2, OUTPUT);
-
 	car.vehicle_setup();
-	// mainMotor.setSpeed(1300);
 }
 
 // main loop
 void loop() {
-
-	digitalWrite(high_signal1,HIGH);
-	digitalWrite(high_signal2,LOW);
-
 	car.loop();
 }

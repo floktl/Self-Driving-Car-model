@@ -6,7 +6,7 @@
 /*   By: gstronge <gstronge@student.42heilbronn.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 23:06:04 by Florian Kei       #+#    #+#             */
-/*   Updated: 2025/03/07 17:48:29 by gstronge         ###   ########.fr       */
+/*   Updated: 2025/03/10 15:02:20 by gstronge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,42 +20,7 @@ void ESCMotor::initialize()
 	Serial.begin(9600);
 	motor.attach(pin);
 	motor.writeMicroseconds(speed);
-	Serial.println("delay 1 = BEFORE");
-	delay(2000);
-	Serial.println("delay 1 = AFTER");
-	// motor.writeMicroseconds(1000);
-	// delay(2000);
-	// motor.writeMicroseconds(1500);
-	// int temp_speed = speed;
-	// while (temp_speed < 1800)
-	// {
-	// 	Serial.println("1st loop: ");
-	// 	Serial.println(temp_speed);
-	// 	motor.writeMicroseconds(temp_speed);
-	// 	delay(100); // Allow the ESC to
-	// 	temp_speed++;
-	// }
-	// motor.writeMicroseconds(1500);
-	// Serial.println("delay 2 = BEFORE");
-	// delay(10000);
-	// Serial.println("delay 2 = AFTER");
-	// while (temp_speed > 1100)
-	// {
-	// 	Serial.println("2nd loop: ");
-	// 	Serial.println(temp_speed);
-	// 	motor.writeMicroseconds(temp_speed);
-	// 	delay(100); // Allow the ESC to
-	// 	temp_speed--;
-	// }
-	// Serial.println("delay 3 = BEFORE");
-	// delay(10000);
-	// Serial.println("delay 3 = AFTER");
-	// while (temp_speed < 1500)
-	// {
-	// 	motor.writeMicroseconds(temp_speed);
-	// 	delay(100); // Allow the ESC to
-	// 	temp_speed++;
-	// }
+	delay(3000);// to prevent damaging motor when code is changed. can be removed once everuthing works
 }
 
 void ESCMotor::setSpeed(int newSpeed)
@@ -84,8 +49,6 @@ void SteeringServo::initialize()
 
 void SteeringServo::steerLeft(int step)
 {
-        // Serial.println("POSITION LEFT: ");
-        // Serial.println(steering.getPosition());
 	position = constrain(position - step, minLeft, maxRight);
       Serial.println(position);
 	servo.write(position);
